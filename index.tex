@@ -1,8 +1,12 @@
 \documentclass[]{article}
 
+\usepackage[backend=bibtex]{biblatex}
+
 %opening
 \title{How Open is Open Source? Metrics for measuring software mutation}
 \author{Charles Hathaway}
+
+\bibliography{biblo}
 
 \begin{document}
 
@@ -65,7 +69,33 @@ Very interesting paper, but it needs better formatting...
 
 \section{Discussion and comparison of previous metrics}
 
+% We need to talk about everything, including silly things like...
+% Lines of code changed
+
+\subsection{Cyclomatic complexity}
+
+\cite{ref:a_complexity_measure}
+
+\subsection{Normalized Compression Distance}
+
+% Maybe?
+\cite{ref:cilibrasi2005clustering}
+
+\subsection{Effort measure}
+
+% Need to trace this back I think
+% This is sort of the thing that Ron's expirement would look at
+\cite{ref:evaluating_software_complexity_measures}
+
+\subsection{Data flow complexity}
+
+\cite{ref:oviedo1993control}
+
 \section{A new metric}
+
+% We really need to decide what to do about this :(
+
+% Most likely an aggregate metric, but what weights and metrics?
 
 \section{Experiment proposals}
 
@@ -82,5 +112,7 @@ Very interesting paper, but it needs better formatting...
 \section{References}
 %% Please add papers in bibtex format
 %%
+
+\printbibliography
 
 \end{document}
