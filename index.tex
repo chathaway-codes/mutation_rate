@@ -72,9 +72,61 @@ Very interesting paper, but it needs better formatting...
 % We need to talk about everything, including silly things like...
 % Lines of code changed
 
+In this section, we will summeraize and describe previous metrics considered.
+Weyuker wrote a paper in 1988\cite{ref:evaluating_software_complexity_measures} which considered many of these metrics, and we will therefore make references to her paper.
+For convience, I have copied the 9 properties of complexity measures she proposed here. 
+Note, however, that they are explained in greater detail in the paper.
+
+\begin{itemize}
+	\item Property 1: $(\exists P)(\exists Q)(|P|\neq |Q|)$
+	\item Property 2: Let c be a nonnegative number. Then there
+are only finitely many programs of complexity c.
+	\item Property 3: There are distinct programs P and Q such
+that $|P| ~= ~|Q|$
+	\item Property 4: $(\exists P)(\exists Q)(P \equiv Q ~\& ~|P| \neq |Q|)$
+	\item Property 5: $(\forall P)(\forall Q)(|P| \leq |P; Q| ~and ~|Q| \leq |P; Q|)$
+	\item Property 6a: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |P;R| \neq |Q; R|)$
+	\item Property 6b: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |R;P| \neq |R; Q|)$
+	\item Property 7: There are program bodies P and Q such that Q is formed by permuting the order of the statements of P, and $|P| \neq |Q|$
+	\item Property 8: If P is a renaming of Q, then $|P| = |Q|$
+	\item Property 9: $(\exists P)(\exists Q)(|P|+|Q| < |P; Q|)$
+\end{itemize}
+
 \subsection{Cyclomatic complexity}
 
-\cite{ref:a_complexity_measure}
+Thomas McCabe proposed a complexity measure in his 1976 paper \cite{ref:a_complexity_measure}.
+In this section, I will briefly describe how it works, how to calculate it, and discuss some responses to it (specifically the responses made by  Elaine Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}).
+
+\subsubsection{How it works}
+
+The McCabe metric (Cyclomatic number) analyses the control flow of a program to determine how complex it is. 
+There are 3 primary items that is used the calculation of the cyclomatic number:
+\begin{itemize}
+	\item Number of nodes, denoted as n
+	\item Number of edges, denoted as e
+	\item Number of compontents, denoted as p
+\end{itemize}
+
+Given these three variables, we can calculate a complexity (v) of a program using the following equation:
+
+$v ~= ~e ~- ~n ~+ 2p$
+
+The real challenge is to create the graph so you can find values for these variables.
+To do this you must break a program into parts such that there is a starting node, and ending node, and a sequence of nodes between that two have the following key attributes:
+\begin{itemize}
+	\item A compound statement is only one node; ie, int i=0; i = b*x; ... counts as only one node until the next branch occurs
+	\item A branch is a conditional, either in the form of an if statement or a loop (with a loop, connect the node to both the following statement(s) and the code that gets executed after it exits)
+\end{itemize}
+
+As a general rule of a thumb, we have a component anywhere a loop occurs.
+We can have multiple components inside a component (embedded loops). 
+
+Once we have created a graph, it is a trivial matter of counting the number of edges, nodes, and components and applying the equation.
+
+\subsubsection{Analysis}
+
+This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
+Ultimately, she concluded that McCabes metric failed to address properties 2, 6, 7, and 9.
 
 \subsection{Normalized Compression Distance}
 
@@ -89,7 +141,40 @@ Very interesting paper, but it needs better formatting...
 
 \subsection{Data flow complexity}
 
-\cite{ref:oviedo1993control}
+Enrique Oviedo proposed a metric based on data flow in his 1980 paper \cite{ref:oviedo1993control}.
+This metric is based on 2 key components; data flow (DF) and control flow (CF).
+He concludes with the equation $C = \alpha CF + \beta DF$ (where $\alpha=\beta=1$).
+% This later followed up be ... who said \alpha should equal and \beta should equal...
+
+\subsubsection{How it works}
+
+Control flow is simply the cardinality of the program flow graph.
+The program flow graph, and how to construct it, is clearly defined in the paper.
+It more or less follows the same structure as the graphs we construct for the Cyclomatic number, with a more formal definition being given to how a "program" (function in modern terminology) is denoted.
+Formally,
+
+$CF=\parallel E\parallel$
+
+Where $\parallel ~\parallel$ stands for set cardinality.
+
+The more complicated part of this metric is the data flow measure.
+The key terminology for this measure is the distinction between a locally available variable and a locally exposed variable.
+A variable is locally available when the variable is defined in the block (a block is a "node" in our control flow).
+A variable is locally exposed when it is referenced without being defined in the block.
+Another important note is that a variable can be "overridden" in a block if it is locally exposed, and then made locally available. 
+
+$DF_i = \sum\limits_{j=1}^{\parallel V_i \parallel} DEF(v_j)$
+
+Where $V_i$ is the set of exposed variables in this block and $DEF(v_j)$ counts the number of available definitions for $v_j$.
+
+$DF = \sum\limits_{i=1}^{\parallel S \parallel} DF_i+DF_f$
+
+Where S is all nodes except the start and the end nodes.
+
+\subsubsection{Analysis}
+
+This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
+Ultimately, she concluded that McCabes metric failed to address properties 2 and 5.
 
 \subsection{Complexity Measure Based on Program Slicing (CMBPS)}
 
