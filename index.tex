@@ -29,6 +29,11 @@ We will conclude with a proposal for a technique to test the proposed metric.
 % Does it matter how open projects are?
 % How will being able to measure how open projects are help organize things
 
+There have been many attempts over the years to measure software complexity; some of the most well known ones by McCabe \cite{ref:a_complexity_measure}, Oviedo \cite{ref:oviedo1993control}, and Halstead \cite{ref:halstead1977elements}.
+In this article, we will not be proposing a complexity metric; rather, we will be proposing a way of measuring the change in complexity as projects modified and adopted by different groups.
+To do this, we will first create several use cases that maximize different metrics, then ask domain experts to help us determine if the represented code indicates a positive or negative change in complexity.
+For simplicity, this paper will utilize the visual programming environment created for the 3Helix program at Rensselaer Polytechnic Institute, CSnap.
+
 \section{Literature Review}
 
 % We have at least 2 distinct "areas" to review; open source-ness, and ways of measuring software similiarity
@@ -182,13 +187,21 @@ Ultimately, she concluded that McCabes metric failed to address properties 2 and
 % Very recent work!
 \cite{ref:tao2014complexity}
 
-\section{A new metric}
+\section{Measuring change}
 
 % We really need to decide what to do about this :(
 
 % Propose new metric in this paper and test with the toy example (small)
 
 % Most likely an aggregate metric, but what weights and metrics?
+
+There are several issues that need to be addressed by our algorithm of we are to effectively measure change in software over a large period of time.
+These include:
+\begin{itemize}
+	\item Accounting for "non-changes"; ie, making a change to a project, testing it, then changing it back
+	\item Discerning between changes that required little to no effort, and changes that may only have been to a line or two, but required a great deal of effort
+	\item Considering things that change the output as part of the metric; not all changes will change the end-result of a program, but will rather optimize the process; other changes will cause the behavior of the program to dramatically alter. How do we differentiate these things?
+\end{itemize}
 
 \section{Experiment proposals}
 
@@ -199,6 +212,14 @@ Ultimately, she concluded that McCabes metric failed to address properties 2 and
 % ---> This will be done multiple times; 1 project for each metric, then combinations
 % --> Ask "people" which projects represent the most change, the least
 % --> See which metrics agree with the responses the most
+
+In order to test our complexity measure, we will first apply it to the domain of education and student progress.
+The first step of entering this domain is to interface with the primary stakeholders; teachers and educations that work in the schools, with the primary audience; students.
+Rather than trying to "ask" opinions and talk in an abstract way, we have developed a system to measure the change in student work on our CSnap "community site", which teachers can use to help us find a relationship between the various metrics discussed and complexity as viewed by teachers.
+
+Our first experiment will be used to help us calibrate the mutation measure against user input.
+We will design a number of scripts that each maximize a specific metric, while producing the same output, and ask teachers to rank them by complexity.
+
 
 % Repeat with other groups; programmers, crowd sourcing
 
