@@ -1,6 +1,14 @@
 \documentclass[]{article}
 
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[style=ieee,backend=bibtex]{biblatex}
+\PassOptionsToPackage{margin=1in}{geometry}
+\usepackage{wordlike}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{graphicx}
+
+\setstretch{1.5}
+
 
 %opening
 \title{How Open is Open Source? Metrics for measuring software mutation}
@@ -16,8 +24,7 @@
 
 Open source software is toted as being "openly accessible" to many people, thus allowing greater innovation and complex new methodologies.
 However, given the complexity of software and how difficult it is to design and implement, the question of whether or not secondary communities adapt and modify the software needs to be addressed.
-This paper will first summarize previous works regarding the structure of open source communities, discuss how useful or not useful previous attempts to quantify the "open-ness" of projects have been, and finally propose a metric for measuring how open a project is.
-We will conclude with a proposal for a technique to test the proposed metric.
+This paper poses the question of determining the involvement of multiple communities to a project by measuring their contributions in terms of complexity, and discusses how we would go about measuring contributions to a project in a meaningful way.
 
 \end{abstract}
 
@@ -29,57 +36,57 @@ We will conclude with a proposal for a technique to test the proposed metric.
 % Does it matter how open projects are?
 % How will being able to measure how open projects are help organize things
 
+Open Source software, which includes such well known projects as Linux, Apache, and OpenSSL, has a large portion of todays market share in their respective segments.
+According to reports available from w3techs \cite{w3techs2015usage}, *nix systems account for 67.7\% of the internet web servers; 52.7\% of these are running a Linux distribution. 
+Important projects, such as OpenSSL, attract world-wide media attention when sever bugs appear; take for example the numerous articles published because of the April 2014 bug called "Heartbleed" \cite{mitre2013heartbleed}  \cite{whittaker2014heartbleed}.
+
+After this particular crisis, it was realized that there are numerous open source projects that are too big to fail.
+Large corporations agreed to contribute money to these projects, in hopes that it will prevent another such bug \cite{brodkin2014heartbleed}.
+It is here where we can begin to understand the need to figure out who is working on projects, how much are they doing, and how complicated the projects are.
+
+Understanding who is working on a project is no simple matter; we must consider multiple roles (programmer, tester, project manager, to name a few), along with the amount of work they are putting into that project (are they spending 1/8 of their day on it? 16/24 of their day?).
+In this paper, will propose a method for further research that will allow one to quantify the contributions of at least one role in a software developers world; the role of the programmer.
+Namely, what we want to discover is how we can measure the change that a developer causes in the codebase; are they simply renaming variables, adding UI elements, or changing core algorithms?
+
+This forays into the field of software complexity.
+Do not confuse this field with other forms of complexity we often look at in the computer science discipline, such as time and space complexity.
+The goal of this field is to determine how difficult a program is to understand, test, and write.
+We will not be focusing on developing another metric to just determine how complex a program is; rather, we will concern ourselves the change of complexity as function of time (where time can be commits, space-time, or something as arbitrary as lines of code).
+
 There have been many attempts over the years to measure software complexity; some of the most well known ones by McCabe \cite{ref:a_complexity_measure}, Oviedo \cite{ref:oviedo1993control}, and Halstead \cite{ref:halstead1977elements}.
-In this article, we will not be proposing a complexity metric; rather, we will be proposing a way of measuring the change in complexity as projects modified and adopted by different groups.
-To do this, we will first create several use cases that maximize different metrics, then ask domain experts to help us determine if the represented code indicates a positive or negative change in complexity.
+Our goal in this paper is to evaluate the most common complexity measures, and look for correlations between how real people percieve a program to be, and how the metrics understand the complexity of a program.
+To conclude the paper, we will run a small-scale experiment on 5 people, asking them to rank 5 projects (which produce similar output) on how complex they appear to be.
+Later research would repeat this experiment on a larger, and more diverse, group of subjects.
+
 For simplicity, this paper will utilize the visual programming environment created for the 3Helix program at Rensselaer Polytechnic Institute, CSnap.
+These scripts are best stored (for long term access) as images, and will be included at the end of the paper.
 
 \section{Literature Review}
 
 % We have at least 2 distinct "areas" to review; open source-ness, and ways of measuring software similiarity
 
-% Search for previous works on the following keywords:
-% --> Open source project topologies
-% --> Measuring software "changes"
+As a form of literature review, will use a subset of well-known papers that represent some of the most important works in this field.
+Most of these articles have been reprinted \textbf{Software Engineering Metrics Volume 1} \cite{sheppherd1993complexity}, including:
+\begin{itemize}
+	\item \textbf{A Complexuty Measure} \cite{ref:a_complexity_measure}
+	\item \textbf{Control Flow, Data Flow, and Program Complexity} \cite{ref:oviedo1993control}
+\end{itemize}
 
-%%%% Open source project topologies %%%%
-% Initial google search returned links to GEOS, JTS Topology Suite
-% Search on scholar.google.com more fruitful; link to http://dl.acm.org/citation.cfm?id=381535
-
-\subsection{A case study of the evolution of Jun: an object-oriented open-source 3D multimedia library}
-
-% Once I get this into the biblo, change to \ref or whatever
-This paper discusses the development of an open source graphics library that focuses on ease of use over performance.
-Some notable things to consider; the project was written in Smalltalk (the same language as the original Scratch), it still exists, and it was primarily developed by a small team (rather than a community)
-% -> Company site: http://www.cincomsmalltalk.com/main/community/product-portal/contributed/jun/
-% -> Source code: http://aokilab.kyoto-su.ac.jp/jun/index.html
-% This poses the interesting question of whether or not development teams are usually small, or large?
-% -> Asked in ref:two_case_studies
-
-%%%%% analysis of open source network %%%%
-
-% First response is The open source software development phenomenon: An analysis based on social network theory
-\ref{ref:open_source_network_theory} uses graph theory to map developers to projects, and create a "graph" which they discuss in the form of network theory.
-This is very similiar to what I had hoped to do with Github, and the graph is fascinating.
-They coin the term "linchpin developer" to talk about developers who tie together projects.
-Very interesting paper, but it needs better formatting...
-% -> This led to a great find of papers by searching for papers which reference this one
-% --> http://scholar.google.com/scholar?cites=3750653309408772417&as_sdt=5,33&sciodt=0,33&hl=en
-
-
-
+It is worth mentioning that most of these metrics have had their accuracy questioned, and for the most part been proven to fail in one or more ways.
+A very well known paper that described the failure of these metrics is \textbf{Evaluating Software Complexity Measures}, written in 1988 by Elaine J. Weyuker \cite{ref:evaluating_software_complexity_measures}.
+The analysis done in this paper has been used as the core for many following software complexity papers, including the recent publication by Hongwei Tao, \textbf{Complexity measure based on program slicing and its validation} \cite{ref:tao2014complexity}.
 
 
 % More stuff?
 
-\section{Discussion and comparison of previous metrics}
+\subsection{Evaluating Software Complexity Measures}
 
 % We need to talk about everything, including silly things like...
 % Lines of code changed
 
-In this section, we will summeraize and describe previous metrics considered.
+In this section, we will summarize and describe previous metrics considered.
 Weyuker wrote a paper in 1988\cite{ref:evaluating_software_complexity_measures} which considered many of these metrics, and we will therefore make references to her paper.
-For convience, I have copied the 9 properties of complexity measures she proposed here. 
+For convenience, I have copied the 9 properties of complexity measures she proposed here. 
 Note, however, that they are explained in greater detail in the paper.
 
 \begin{itemize}
@@ -132,17 +139,26 @@ Once we have created a graph, it is a trivial matter of counting the number of e
 
 This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
 Ultimately, she concluded that McCabes metric failed to address properties 2, 6, 7, and 9.
+Additional critique was made by Martin J. Shepperd in his 1988 paper \cite{shepperd1988critique}, however we found some discrepancies between this critique and the model developed by McCabe.
 
 \subsection{Normalized Compression Distance}
 
-% Maybe?
-\cite{ref:cilibrasi2005clustering}
+Proposed by Rudi Cilibrasi and Paul Vitanyi in their 2005 paper, \textbf{Clustering by compression} \cite{ref:cilibrasi2005clustering} puts forth a very straightforward way of calculating complexity changes between two pieces of code, without even knowledge of the structure of the content.
+They proposed using a standard compression method (such as gzip or PPMZ) to approximate the Kolmogorov complexity of a program, and using this solve the equation in figure \ref{ncd_eq_1}.
 
-\subsection{Effort measure}
 
+\begin{figure}[h]
+	\caption{Normalized Compression Distance}
+	\label{ncd_eq_1}
+	\centering
+	$NCD(x,y) ~= \frac{C(xy) - min(C(x),C(y))}{max(C(x),C(y))}$
+\end{figure}
+
+%\subsection{Effort measure}
+% Forgo this section for now, I'm missing the book where it is defined
 % Need to trace this back I think
 % This is sort of the thing that Ron's expirement would look at
-\cite{ref:evaluating_software_complexity_measures}
+%\cite{ref:evaluating_software_complexity_measures}
 
 \subsection{Data flow complexity}
 
@@ -179,13 +195,16 @@ Where S is all nodes except the start and the end nodes.
 \subsubsection{Analysis}
 
 This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
-Ultimately, she concluded that McCabes metric failed to address properties 2 and 5.
+Ultimately, she concluded that the Dataflow metric failed to address properties 2 and 5.
 
-\subsection{Complexity Measure Based on Program Slicing (CMBPS)}
+\subsection{Other metrics}
 
-% This is an aggregate complexity measure
-% Very recent work!
-\cite{ref:tao2014complexity}
+In addition to the above stated metrics, we will also consider lines of code (also referred to as statement count).
+This metric is almost universally accepted as not indicative of the complexity of a program, and will provide a sane reference point to verify that we are not just finding correct data.
+
+Lines of code is very dependent on the language in which we are evaluating programs.
+Since we are using CSnap as a small-scale staging run, we will consider a "line of code" to be a command block (as defined by Snap! and CSnap).
+These blocks include things such as "if", "go to {x coordinate}", etc.
 
 \section{Measuring change}
 
@@ -217,9 +236,98 @@ In order to test our complexity measure, we will first apply it to the domain of
 The first step of entering this domain is to interface with the primary stakeholders; teachers and educations that work in the schools, with the primary audience; students.
 Rather than trying to "ask" opinions and talk in an abstract way, we have developed a system to measure the change in student work on our CSnap "community site", which teachers can use to help us find a relationship between the various metrics discussed and complexity as viewed by teachers.
 
-Our first experiment will be used to help us calibrate the mutation measure against user input.
-We will design a number of scripts that each maximize a specific metric, while producing the same output, and ask teachers to rank them by complexity.
+Before getting input from teachers, a survey needs to be developed and tested.
+It will consists of a small number of scripts, which have varying degrees complexity.
+The teachers will ultimately look at these scripts, and provide an absolute and relative complexity ranking that we can use to help calibrate our metric to present them with a very solid example to base their more qualitative feedback on.
+Before presenting to the teachers, we will test the survey on fellows in the GK12 grant to verify the correctness and understandability of the survey.
+In the next section, our initial results will be documented.
 
+\section{Pre-experiment Results}
+
+For this first draft, we created a survey consisting of the following questions
+\begin{enumerate}
+	\item Please rank the above projects from most complex (5) to least complex (1)
+	\begin{itemize}
+		\item Alpha
+		\item Beta
+		\item Bravo
+		\item Charlie
+		\item Delta
+	\end{itemize}
+	\item How complex would you rate each project (1 = not very complex, 100 = very complex)
+	\item What is your gender?
+	\begin{itemize}
+		\item Female
+		\item Male
+	\end{itemize}
+	\item Which race/ethnicity best describes you? (Please choose only one.)
+	\begin{itemize}
+		\item American Indian or Alaskan Native
+		\item Asian / Pacific Islander
+		\item Black or African American
+		\item Hispanic American
+		\item White / Caucasian
+		\item Multiple ethnicity / Other (please specify)
+	\end{itemize}
+	\item What was your major?
+\end{enumerate}
+
+The scripts presented to the subjects can be seen in figures \ref{alpha}, \ref{beta}, \ref{bravo}, \ref{charlie}, and \ref{delta}
+
+\begin{figure}[fh!]
+	\caption{Calculate Metrics for Scripts}
+	\label{calculate_metrics}
+	\centering
+	\begin{tabular}{l || c | c | c | c| c }
+		& Cyclomatic & Dataflow & NCD & Lines of Code \\
+		Alpha & -1 & 1 & 0.054 & 23 \\
+		Beta & 2 & 6 & 0.031 & 14 \\
+		Bravo & -1 & 1 & 0.039 & 11 \\
+		Charlie & 6 & 28 & 0.056 & 25 \\
+		Delta & 9 & 24 & 0.06 & 19
+	\end{tabular}
+\end{figure}
+
+Figure \ref{calculate_metrics} shows the calculate metrics of each of the scripts.
+These metrics were calculated via a program which will be included with the follow work to this paper, or when requested.
+NCD in this table represents a comparison between the given project, and Alpha. 
+We used Alpha as a based project, and calculated the NCD in relation to that project.
+Interestingly, for 2 identical programs we ended with a wildly different NCD.
+
+\begin{figure}[h]
+	\caption{Sample Project Alpha}
+	\label{alpha}
+	\centering
+	\includegraphics{sample_csnap_applications/alpha.png}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Sample Project Beta}
+	\label{beta}
+	\centering
+	\includegraphics{sample_csnap_applications/beta.png}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Sample Project Bravo}
+	\label{bravo}
+	\centering
+	\includegraphics{sample_csnap_applications/bravo.png}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Sample Project Charlie}
+	\label{charlie}
+	\centering
+	\includegraphics{sample_csnap_applications/charlie.png}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Sample Project Delta}
+	\label{delta}
+	\centering
+	\includegraphics{sample_csnap_applications/delta.png}
+\end{figure}
 
 % Repeat with other groups; programmers, crowd sourcing
 
