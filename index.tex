@@ -288,11 +288,113 @@ The scripts presented to the subjects can be seen in figures \ref{alpha}, \ref{b
 	\end{tabular}
 \end{figure}
 
+\subsection{Program Output}
+
 Figure \ref{calculate_metrics} shows the calculate metrics of each of the scripts.
 These metrics were calculated via a program which will be included with the follow work to this paper, or when requested.
 NCD in this table represents a comparison between the given project, and Alpha. 
 We used Alpha as a based project, and calculated the NCD in relation to that project.
 Interestingly, for 2 identical programs we ended with a wildly different NCD.
+
+\subsection{Survey Results}
+
+We had a total 5 of people complete the survey, and got the reults listed in figures \ref{survey-results-relative} and \ref{survey-results-absolute}.
+
+\begin{figure}[fh!]
+	\caption{Survey Results -- Relative}
+	\label{survey-results-relative}
+	\centering
+	\begin{tabular}{llllll}
+Respondent & rel\_alpha & rel\_beta & rel\_bravo & rel\_charlie & rel\_delta \\
+1          & 3          & 1         & 2          & 5            & 4          \\
+2          & 1          & 4         & 3          & 5            & 2          \\
+3          & 2          & 3         & 1          & 4            & 5          \\
+4          & 1          & 5         & 2          & 4            & 3          \\
+           &            &           &            &              &            \\
+Mode       & 1          & \#N/A     & 2          & 5            & \#N/A      \\
+Median     & 1.5        & 3.5       & 2          & 4.5          & 3.5        \\
+Mean       & 1.75       & 3.25      & 2          & 4.5          & 3.5       
+\end{tabular}
+\end{figure}
+\begin{figure}[fh!]
+	\caption{Survey Results -- Absolute}
+	\label{survey-results-absolute}
+	\centering
+	\begin{tabular}{llllll}
+Respondent & abs\_alpha & abs\_beta & abs\_bravo & abs\_charlie & abs\_delta \\
+1          & 30         & 10        & 15         & 50           & 45         \\
+2          & 5          & 13        & 11         & 20           & 10         \\
+3          & 16         & 32        & 8          & 64           & 100        \\
+4          & 20         & 50        & 25         & 40           & 35         \\
+           &            &           &            &              &            \\
+Mode       & \#N/A      & \#N/A     & \#N/A      & \#N/A        & \#N/A      \\
+Median     & 18         & 22.5      & 13         & 45           & 40         \\
+Mean       & 17.75      & 26.25     & 14.75      & 43.5         & 47.5      
+\end{tabular}
+\end{figure}
+
+
+\begin{figure}[fh!]
+	\caption{Survey Results -- Responder Gender and Ethnicity}
+	\label{survey-results-gender}
+	\centering
+\begin{tabular}{llllll}
+Respondent & gender & ethnicity        &  &  &  \\
+1          & male   & white            &  &  &  \\
+2          & female & white            &  &  &  \\
+3          & male   & white            &  &  &  \\
+4          & female & african american &  &  &  \\
+           &        &                  &  &  &  \\
+           &        &                  &  &  &  \\
+           &        &                  &  &  &  \\
+           &        &                  &  &  & 
+\end{tabular}
+\end{figure}
+
+\section{Conclusion}
+
+We can clearly see a general consensus that charlie is the most complex project, and alpha the least complex.
+There is some disagreement as to how complex delta was; 3 of the respondents listed at as fairly complex (and in most cases, much more complex then the less complex project), except for respondant 2.
+However, this respondent commented that the reason for the lower ranking was that it didn't rely on "hidden magic" in the draw triangle block.
+This raises an interesting discussion around our program, which did not delve into the blocks when calculating complexity.
+It did this for 2 reasons:
+\begin{enumerate}
+	\item Not all blocks are written in CSnap, so we would need to understand Javascript
+	\item It is reasonable to expect that you won't have access to all code all the time; the use of libraries complicates and obsuficates much code in real life.
+\end{enumerate}
+
+By not evaluating hidden blocks, we can focus in on the code the user sees, which we believe to be more important in terms of measuring user contribution (but might lead to inaccurate data-flow results).
+
+If we take each projects relative score from each respondant and sum them, we can order projects (from least to most complex):
+\begin{enumerate}
+	\item Bravo (7)
+	\item Alpha (8)
+	\item Beta (13)
+	\item Delta (14)
+	\item Charlie (18)
+\end{enumerate}
+
+% Bravo, Beta, Delta, Alpha, Charlie
+There is only a very small correlation with Lines of Code as a metric; 2/5 scores line up.
+
+% alpha, bravo, beta, delta, charlie
+Cyclomatic complexity and data flow are much better; 5/5 (alpha and bravo tied, but they were also really close according to user ratings).
+This suggests that these two ratings are more accurate than LOC.
+
+Comparing to NCD is a bit more tricky, as we need to see how similar they are.
+There is no accurate way to do this based on the survey, and would require a much larger testing group as it would be much more subjective.
+
+The absolute ranking provide an interesting insight if look at them as functions of "distance".
+Most users didn't utilize the entire range (1-100), but instead stuck with a range of 1-50 or less.
+We can say that, on average, the least complex project (accoring to the relative ranking, bravo), is 3.5 times less complex than the most complex project (charlie).
+This may be scewed by responder bias; we can clearly see that responder who went up to 100 would have gladly went up to 128 if we had let them.
+
+Based on this small sample size, we can't make too many obersvations.
+However, it does help to clarify the problem, and demonstrate how a larger expirement may be conducted for future works.
+
+% TODO! Ron, what previous works? Or am I making this up
+On this small amount of data, I don't want to make any speculation on correlations between gender and/or ethnicity and responses.
+However, I suspect there would be an interesting correlation there based on the responses given; previous works (?) have found that females want a more complete picture than males; in our results, the two female participants ranked delta lower than the males consistently, which was the only project that didn't use "magic".
 
 \begin{figure}[h]
 	\caption{Sample Project Alpha}
@@ -319,19 +421,18 @@ Interestingly, for 2 identical programs we ended with a wildly different NCD.
 	\caption{Sample Project Charlie}
 	\label{charlie}
 	\centering
-	\includegraphics{sample_csnap_applications/charlie.png}
+	\includegraphics[width=0.75\textwidth]{sample_csnap_applications/charlie.png}
 \end{figure}
 
 \begin{figure}[h]
 	\caption{Sample Project Delta}
 	\label{delta}
 	\centering
-	\includegraphics{sample_csnap_applications/delta.png}
+	\includegraphics[width=1.0\textwidth]{sample_csnap_applications/delta.png}
 \end{figure}
 
 % Repeat with other groups; programmers, crowd sourcing
 
-\section{Conclusion}
 %% Moorthy
 %% Please add papers in bibtex format
 %%
