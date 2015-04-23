@@ -182,11 +182,19 @@ The more complicated part of this metric is the data flow measure.
 The key terminology for this measure is the distinction between a locally available variable and a locally exposed variable.
 A variable is locally available when the variable is defined in the block (a block is a "node" in our control flow).
 A variable is locally exposed when it is referenced without being defined in the block.
-Another important note is that a variable can be "overridden" in a block if it is locally exposed, and then made locally available. 
+Another important note is that a variable can be "overridden" (killed) in a block if it is locally exposed, and then made locally available.
 
 $DF_i = \sum\limits_{j=1}^{\parallel V_i \parallel} DEF(v_j)$
 
-Where $V_i$ is the set of exposed variables in this block and $DEF(v_j)$ counts the number of available definitions for $v_j$.
+Where $V_i$ is the set of exposed variables in this block and $DEF(v_j)$ counts the number of available definitions for $v_j$; that is, for j from 1 to length(the set of variables that reach block i) add the number of definitions of variable j to the running total.
+The example given by Oviedo is:
+\begin{quotation}
+	For example, if block $n_i$ consists of the statements \textit{X = Y; A = B * Y * ( C - B ); Z = 2 + A;} and the set of variables definitions that can reach block $n_i$ is $R_i ~= ~{C_j, B_j, Y_k, B_k}$ (ie, if the definitions of C and B in block $n_j$ and the definitions of Y and B in block $n_k$ can reach block $n_j$), then, according to Definition 8, we have $V_i ~= ~{C,B,Y}$ and
+	
+	$DF_j = \sum\limits_{j=1}^{3} DEF(v_j)~=~4$
+\end{quotation}
+
+Although some authors (for example, the author of the very well known Principles of Compiler Design \cite{aho1977principles}) utilize DEF alongside other functions, such as KILL and USE, these are not described in Oviedo's paper.
 
 $DF = \sum\limits_{i=1}^{\parallel S \parallel} DF_i+DF_f$
 
@@ -239,7 +247,7 @@ Rather than trying to "ask" opinions and talk in an abstract way, we have develo
 Before getting input from teachers, a survey needs to be developed and tested.
 It will consists of a small number of scripts, which have varying degrees complexity.
 The teachers will ultimately look at these scripts, and provide an absolute and relative complexity ranking that we can use to help calibrate our metric to present them with a very solid example to base their more qualitative feedback on.
-Before presenting to the teachers, we will test the survey on fellows in the GK12 grant to verify the correctness and understandability of the survey.
+Before presenting to the teachers, we will test the survey on fellows in the GK12 grant to verify the correctness and understand-ability of the survey.
 In the next section, our initial results will be documented.
 
 \section{Pre-experiment Results}
@@ -280,11 +288,11 @@ The scripts presented to the subjects can be seen in figures \ref{alpha}, \ref{b
 	\centering
 	\begin{tabular}{l || c | c | c | c| c }
 		& Cyclomatic & Dataflow & NCD & Lines of Code \\
-		Alpha & -1 & 1 & 0.054 & 23 \\
+		Alpha & 1 & 2 & 0.054 & 23 \\
 		Beta & 2 & 6 & 0.031 & 14 \\
-		Bravo & -1 & 1 & 0.039 & 11 \\
-		Charlie & 6 & 28 & 0.056 & 25 \\
-		Delta & 9 & 24 & 0.06 & 19
+		Bravo & 1 & 2 & 0.039 & 11 \\
+		Charlie & 6 & 27 & 0.056 & 25 \\
+		Delta & 7 & 23 & 0.06 & 19
 	\end{tabular}
 \end{figure}
 
