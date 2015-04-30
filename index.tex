@@ -104,6 +104,13 @@ that $|P| ~= ~|Q|$
 	\item Property 9: $(\exists P)(\exists Q)(|P|+|Q| < |P; Q|)$
 \end{itemize}
 
+\subsection{Summarization of control Graphs}
+
+Control graphs are used by many metrics, and rather than repeating their design in every section, I will describe them here. 
+This description is referenced against McCabes definition, but also verified against Oviedo's.
+
+
+
 \subsection{Cyclomatic complexity}
 
 Thomas McCabe proposed a complexity measure in his 1976 paper \cite{ref:a_complexity_measure}.
@@ -295,6 +302,52 @@ The scripts presented to the subjects can be seen in figures \ref{alpha}, \ref{b
 		Delta & 7 & 23 & 0.06 & 19
 	\end{tabular}
 \end{figure}
+
+\subsection{Program Description}
+
+The Python program used to generated the metric results for this paper is available, at request, from the author.
+It is not open source yet, as it is in a repository that also contains copyrighted material.
+However, in this section we will explain how the program works.
+
+\subsubsection{Control Graph Generation}
+
+Generating the control graph turned out to be more difficult than thought, due to the complexity related to storing things in XML.
+The current program parses XML scripts saved from CSnap, extracts the sprites and all their scripts, then constructs directed graph objects from these scripts.
+These graph objects have several notable methods, namely:
+\begin{itemize}
+	\item Graph.components -- Returns a list of lists, each of which contains a component seperated from the others
+	\item Graph.lines\_of\_code -- Returns the number of lines of code, summed from the number of lines in each node
+	\item Graph.to\_png -- Give an input filename, outputs a PNG containing the control flow graph for all components
+\end{itemize}
+
+The graph consists of nodes, which are represented by Node objects.
+These objects are constructed by the parse\_xml script, and contain the following attributes:
+\begin{itemize}
+	\item parents -- The parent nodes of this object, if any. If is important to note that this needs to be a list because it is possible for a node can have multiple parents; namely if it's the statement that follows an if-else block
+	\item variables -- A list of variables that get set in this node
+	\item references -- A list of variables that get referenced in this node
+	\item children -- A list of children of this node
+	\item name -- A string representing a "name" for a node; in our implementation, this is a list of the statements in the node
+	\item node\_type -- This merely indicates if this node a loop node, if node, or "data" block
+	\item lines\_of\_code -- A number representing the number of lines of code in the node
+\end{itemize}
+
+The most interesting methods on these objects, not counting getters and setters are:
+\begin{itemize}
+	\item start\_node -- Returns true if this node has no parents, indicating that it is a start node, or False otherwise
+	\item end\_node -- Returns true if this node has no children, indicating that is a end node, or False otherwise
+	\begin{itemize}
+		\item These two things are not mutually exclusive; consider a graph which has only statements and no loops or branches. Although we later add a program entry and exit point, during the generation this node is simultaneously an end and start node
+	\end{itemize}
+\end{itemize}
+
+The last thing to mention is a generic interface called "Metric".
+This is subclassed by all metric calculators, and simply takes a graph as input and verifies that all children redefine the "calculate" method.
+
+I should also mention why we actually build the graph, as opposed to counting the number of loops and if statements.
+Not all metrics are the same, and at the time of writing I was not certain how all programs would look at the control graph.
+Therefore, rather than using a shortcut, I constructed it so that all metrics could gather whatever data they needed without me needing to write multiple version of "Graph".
+A good example of where this paid of the Data Flow metric; it uses the control flow graph to help calculate the data flow numbers, by stepping back through data nodes to see where variables were first defined.
 
 \subsection{Program Output}
 
