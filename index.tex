@@ -104,10 +104,18 @@ that $|P| ~= ~|Q|$
 	\item Property 9: $(\exists P)(\exists Q)(|P|+|Q| < |P; Q|)$
 \end{itemize}
 
-\subsection{Summarization of control Graphs}
+\subsection{Summarization of Control Graphs}
 
 Control graphs are used by many metrics, and rather than repeating their design in every section, I will describe them here. 
-This description is referenced against McCabes definition, but also verified against Oviedo's.
+There has been some change in the nature of computer programming which makes many of the graphs demonstrated in older literature obsolete, namely the case where a GOTO drops execution into a loop or conditional from elsewhere.
+We will set aside this case, to make the generation much more simple.
+
+Given a program start point, P, add every statement to a node N until a conditional (or loop) node is reached.
+At this point, create a new node to represent the conditional, and follow both new paths.
+When they end, join them into a new node.
+If we are dealing with a loop, when we reach the end of the loops inner block, draw a line back to our loop node. 
+Then connect the loop node to a new node. 
+To help clarify, some sample programs, (along with their graphs) are given below.
 
 
 
@@ -198,7 +206,7 @@ The example given by Oviedo is:
 \begin{quotation}
 	For example, if block $n_i$ consists of the statements \textit{X = Y; A = B * Y * ( C - B ); Z = 2 + A;} and the set of variables definitions that can reach block $n_i$ is $R_i ~= ~{C_j, B_j, Y_k, B_k}$ (ie, if the definitions of C and B in block $n_j$ and the definitions of Y and B in block $n_k$ can reach block $n_j$), then, according to Definition 8, we have $V_i ~= ~{C,B,Y}$ and
 	
-	$DF_j = \sum\limits_{j=1}^{3} DEF(v_j)~=~4$
+	$DF_j = \sum\limits_{j=1}^{3} DEF(v_j)~=~4$ \cite{ref:oviedo1993control}
 \end{quotation}
 
 Although some authors (for example, the author of the very well known Principles of Compiler Design \cite{aho1977principles}) utilize DEF alongside other functions, such as KILL and USE, these are not described in Oviedo's paper.
