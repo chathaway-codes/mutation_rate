@@ -88,6 +88,10 @@ In this section, we will summarize and describe previous metrics considered.
 Weyuker wrote a paper in 1988\cite{ref:evaluating_software_complexity_measures} which considered many of these metrics, and we will therefore make references to her paper.
 For convenience, I have copied the 9 properties of complexity measures she proposed here. 
 Note, however, that they are explained in greater detail in the paper.
+% begin comment msk -
+%You have to explain what P and Q are Are they Programs/Predicates -
+%Intuition behind each of these properties have to be esplained
+% end comment msk
 
 \begin{itemize}
 	\item Property 1: $(\exists P)(\exists Q)(|P|\neq |Q|)$
@@ -149,13 +153,18 @@ As a general rule of a thumb, we have a component anywhere a loop occurs.
 We can have multiple components inside a component (embedded loops). 
 
 Once we have created a graph, it is a trivial matter of counting the number of edges, nodes, and components and applying the equation.
-
+%begin comment msk
+% you have to give example numbers for one of the examples and explain 
+%end msk
 \subsubsection{Analysis}
 
 This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
 Ultimately, she concluded that McCabes metric failed to address properties 2, 6, 7, and 9.
 Additional critique was made by Martin J. Shepperd in his 1988 paper \cite{shepperd1988critique}, however we found some discrepancies between this critique and the model developed by McCabe.
-
+%begin comment msk
+% Analysis cannot be the name of a metric - It does not make sense
+%you have to give example numbers for one of the examples and explain 
+%end msk
 \subsection{Normalized Compression Distance}
 
 Proposed by Rudi Cilibrasi and Paul Vitanyi in their 2005 paper, \textbf{Clustering by compression} \cite{ref:cilibrasi2005clustering} puts forth a very straightforward way of calculating complexity changes between two pieces of code, without even knowledge of the structure of the content.
@@ -168,7 +177,10 @@ They proposed using a standard compression method (such as gzip or PPMZ) to appr
 	\centering
 	$NCD(x,y) ~= \frac{C(xy) - min(C(x),C(y))}{max(C(x),C(y))}$
 \end{figure}
-
+%begin comment msk
+%you have to give example numbers for one of the examples and explain 
+%end msk
+% 
 %\subsection{Effort measure}
 % Forgo this section for now, I'm missing the book where it is defined
 % Need to trace this back I think
@@ -181,6 +193,10 @@ Enrique Oviedo proposed a metric based on data flow in his 1980 paper \cite{ref:
 This metric is based on 2 key components; data flow (DF) and control flow (CF).
 He concludes with the equation $C = \alpha CF + \beta DF$ (where $\alpha=\beta=1$).
 % This later followed up be ... who said \alpha should equal and \beta should equal...
+
+%begin comment msk
+% You need to give an example here - The notations are not known in the compiler area 
+%end comment msk
 
 \subsubsection{How it works}
 
@@ -214,6 +230,10 @@ Although some authors (for example, the author of the very well known Principles
 $DF = \sum\limits_{i=1}^{\parallel S \parallel} DF_i+DF_f$
 
 Where S is all nodes except the start and the end nodes.
+
+%begin comment msk
+%you have to give example numbers for one of the examples and explain 
+%end msk
 
 \subsubsection{Analysis}
 
