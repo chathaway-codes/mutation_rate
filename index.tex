@@ -6,6 +6,7 @@
 \usepackage{setspace}
 \usepackage{parskip}
 \usepackage{graphicx}
+\usepackage{listings}
 
 \setstretch{1.5}
 
@@ -38,7 +39,7 @@ This paper poses the question of determining the involvement of multiple communi
 
 Open Source software, which includes such well known projects as Linux, Apache, and OpenSSL, has a large portion of todays market share in their respective segments.
 According to reports available from w3techs \cite{w3techs2015usage}, *nix systems account for 67.7\% of the internet web servers; 52.7\% of these are running a Linux distribution. 
-Important projects, such as OpenSSL, attract world-wide media attention when sever bugs appear; take for example the numerous articles published because of the April 2014 bug called "Heartbleed" \cite{mitre2013heartbleed}  \cite{whittaker2014heartbleed}.
+Important projects, such as OpenSSL, attract world-wide media attention when severe bugs appear; take for example the numerous articles published because of the April 2014 bug called "Heartbleed" \cite{mitre2013heartbleed}  \cite{whittaker2014heartbleed}.
 
 After this particular crisis, it was realized that there are numerous open source projects that are too big to fail.
 Large corporations agreed to contribute money to these projects, in hopes that it will prevent another such bug \cite{brodkin2014heartbleed}.
@@ -68,7 +69,7 @@ These scripts are best stored (for long term access) as images, and will be incl
 As a form of literature review, will use a subset of well-known papers that represent some of the most important works in this field.
 Most of these articles have been reprinted \textbf{Software Engineering Metrics Volume 1} \cite{sheppherd1993complexity}, including:
 \begin{itemize}
-	\item \textbf{A Complexuty Measure} \cite{ref:a_complexity_measure}
+	\item \textbf{A Complexity Measure} \cite{ref:a_complexity_measure}
 	\item \textbf{Control Flow, Data Flow, and Program Complexity} \cite{ref:oviedo1993control}
 \end{itemize}
 
@@ -88,6 +89,9 @@ In this section, we will summarize and describe previous metrics considered.
 Weyuker wrote a paper in 1988\cite{ref:evaluating_software_complexity_measures} which considered many of these metrics, and we will therefore make references to her paper.
 For convenience, I have copied the 9 properties of complexity measures she proposed here. 
 Note, however, that they are explained in greater detail in the paper.
+
+In the following statements, P and Q represent entire programs.
+In order to satisfy each property, the metric result of each of the proposed methods must satisfy all of these properties to be considered correct; the use of carnality operators in the context returns the result of a particular metric algorithm instead of the length of a program.
 % begin comment msk -
 %You have to explain what P and Q are Are they Programs/Predicates -
 %Intuition behind each of these properties have to be esplained
@@ -95,17 +99,44 @@ Note, however, that they are explained in greater detail in the paper.
 
 \begin{itemize}
 	\item Property 1: $(\exists P)(\exists Q)(|P|\neq |Q|)$
+	\begin{itemize}
+		\item There exists a program P and a program Q such that the complexity of program P does not equal the complexity of program Q. ie, not all programs have the same complexity
+	\end{itemize}
 	\item Property 2: Let c be a nonnegative number. Then there
 are only finitely many programs of complexity c.
+	\begin{itemize}
+		\item There is a limit to the number of programs at complexity c
+	\end{itemize}
 	\item Property 3: There are distinct programs P and Q such
 that $|P| ~= ~|Q|$
+	\begin{itemize}
+		\item There are two programs that do have the same complexity measure
+	\end{itemize}
 	\item Property 4: $(\exists P)(\exists Q)(P \equiv Q ~\& ~|P| \neq |Q|)$
+	\begin{itemize}
+		\item Programs P and Q produce the same output, but don't have the same complexity
+	\end{itemize}
 	\item Property 5: $(\forall P)(\forall Q)(|P| \leq |P; Q| ~and ~|Q| \leq |P; Q|)$
+	\begin{itemize}
+		\item In all cases, adding together programs doesn't make them less complex
+	\end{itemize}
 	\item Property 6a: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |P;R| \neq |Q; R|)$
 	\item Property 6b: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |R;P| \neq |R; Q|)$
+	\begin{itemize}
+		\item Taken together, 6a and 6b are meant to say that adding the same program to existing programs, with the same complexity, doesn't necessarily mean that the two programs will still have the same complexity; for example, variables may interact in such a way as to make it much more complicated.
+	\end{itemize}
 	\item Property 7: There are program bodies P and Q such that Q is formed by permuting the order of the statements of P, and $|P| \neq |Q|$
+	\begin{itemize}
+		\item The order of the statements has an impact on complexity; ie, the same statements in a different order can mean something more complicated
+	\end{itemize}
 	\item Property 8: If P is a renaming of Q, then $|P| = |Q|$
+	\begin{itemize}
+		\item Simply changing the name of our variables shouldn't impact the complexity of the program
+	\end{itemize}
 	\item Property 9: $(\exists P)(\exists Q)(|P|+|Q| < |P; Q|)$
+	\begin{itemize}
+		\item Adding the complexity of two programs could result a complexity number lower than adding the two programs together and taking the complexity again
+	\end{itemize}
 \end{itemize}
 
 \subsection{Summarization of Control Graphs}
@@ -153,18 +184,31 @@ As a general rule of a thumb, we have a component anywhere a loop occurs.
 We can have multiple components inside a component (embedded loops). 
 
 Once we have created a graph, it is a trivial matter of counting the number of edges, nodes, and components and applying the equation.
-%begin comment msk
-% you have to give example numbers for one of the examples and explain 
-%end msk
+
+\subsubsection{Example}
+
+Looking at the control graph for the first program, see figure \ref{alpha}, we can calculate the cyclomatic number pretty easily.
+There are 2 edges, 3 nodes, and 1 component.
+Therefore, our cyclomatic number is:
+
+$v ~= ~e ~- ~n ~+ 2p ~= ~2 ~- ~3 ~+ 2(1) ~= 1$
+
+In this figure, we can see that all statements get put into one node.
+More complicated graph, such as the one for program delta in figure \ref{delta}, allow to see how the control flow graph is generated more intuitively.
+
 \subsubsection{Analysis}
 
 This metric was included in the analysis performed by Weyuker in her 1988 paper \cite{ref:evaluating_software_complexity_measures}.
-Ultimately, she concluded that McCabes metric failed to address properties 2, 6, 7, and 9.
+Ultimately, she concluded that McCabes metric failed to address properties 2, 6, 7, and 9, for the following reasons:
+\begin{itemize}
+	\item Property 2: We can easily imagine an infinite number of programs that don't branch, but are just repeats of the same statement over and over (x+=2;x+=2;x+=2..). These programs would have a complexity of 1, and there are an infinite number of them
+	\item Property 6: Since McCabes complexity measure doesn't account for the interaction of variables, appending a program (R) to the end of another program (P) would always result in $|P|+|R|$, whichs means that if $|Q|=|P|$, then $|Q|+|R| ~= ~|P|+|R|$.
+	\item Property 7: The order of statements in McCabe's metric have no influence on complexity; we will always have the same number of branches, same number of nodes, and components
+	Property 9: McCabe's metric fails this for the same reason as property 6
+\end{itemize}
+
 Additional critique was made by Martin J. Shepperd in his 1988 paper \cite{shepperd1988critique}, however we found some discrepancies between this critique and the model developed by McCabe.
-%begin comment msk
-% Analysis cannot be the name of a metric - It does not make sense
-%you have to give example numbers for one of the examples and explain 
-%end msk
+
 \subsection{Normalized Compression Distance}
 
 Proposed by Rudi Cilibrasi and Paul Vitanyi in their 2005 paper, \textbf{Clustering by compression} \cite{ref:cilibrasi2005clustering} puts forth a very straightforward way of calculating complexity changes between two pieces of code, without even knowledge of the structure of the content.
@@ -177,10 +221,56 @@ They proposed using a standard compression method (such as gzip or PPMZ) to appr
 	\centering
 	$NCD(x,y) ~= \frac{C(xy) - min(C(x),C(y))}{max(C(x),C(y))}$
 \end{figure}
-%begin comment msk
-%you have to give example numbers for one of the examples and explain 
-%end msk
-% 
+
+There is some additional difficulty involved in computing this from CSnap projects; a large portion of the XML file is simply constant data, such as the program version, stage size, etc.
+Therefore, to make this more accurate, we only compress and compare the script sections of the XML file.
+This still isn't perfect, since XML has so much additional data, but it a better approximation than using an entire file.
+
+\subsubsection{Example}
+
+If we attempt to compare projects alpha and beta, we can get the NCD by extracting the scripts, compressing them, and performing the outlined calculation listed above.
+The raw XML code is too long to insert here, however, it can be obtained from the data repository in the files "sample\_csnap\_applications/alpha\_script.xml" and "sample\_csnap\_applications/beta\_script.xml".
+
+If we compress these files using gzip, the record the sizes of the new files, we can do the calculation.
+
+\begin{lstlisting}
+[charles@aura sample_csnap_applications]$ cp alpha_script.xml alpha_beta_script.xml
+[charles@aura sample_csnap_applications]$ cat beta_script.xml >> alpha_beta_script.xml
+[charles@aura sample_csnap_applications]$ ls *_script.xml
+alpha_beta_script.xml  alpha_script.xml  beta_script.xml
+[charles@aura sample_csnap_applications]$ gzip *_script.xml
+[charles@aura sample_csnap_applications]$ ls -l *_script.xml.gz
+-rw-rw-r--. 1 charles charles 380 May  7 14:41 alpha_beta_script.xml.gz
+-rw-rw-r--. 1 charles charles 278 May  7 14:37 alpha_script.xml.gz
+-rw-rw-r--. 1 charles charles 315 May  7 14:37 beta_script.xml.gz
+
+\end{lstlisting}
+
+With our variables not set to:
+
+\begin{itemize}
+	\item $C(x) ~= ~278$
+	\item $C(y) ~= ~315$
+	\item $C(xy) ~= ~380$
+\end{itemize}
+
+We can use the equation to calculate NCD:
+
+$NCD(x,y) ~= \frac{C(xy) - min(C(x),C(y))}{max(C(x),C(y))}$
+
+$NCD(x,y) ~= \frac{380 - min(278,315)}{max(278,315)}$
+
+$NCD(x,y) ~= \frac{380 - 278}{315}$
+
+$NCD(x,y) ~= ~0.3238095238095238$
+
+\subsubsection{Analysis}
+
+Weyuker did not analyze this metric in her paper, and as of the time of writing this paper, no one has attempted that comparison.
+This is may be due to the fact that we don't normally analyze the distance between two sets of code as a metric, but it works very well for many of Weyuker's properties.
+
+% % TODO! More
+
 %\subsection{Effort measure}
 % Forgo this section for now, I'm missing the book where it is defined
 % Need to trace this back I think
