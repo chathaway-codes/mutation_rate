@@ -204,7 +204,7 @@ Ultimately, she concluded that McCabes metric failed to address properties 2, 6,
 	\item Property 2: We can easily imagine an infinite number of programs that don't branch, but are just repeats of the same statement over and over (x+=2;x+=2;x+=2..). These programs would have a complexity of 1, and there are an infinite number of them
 	\item Property 6: Since McCabes complexity measure doesn't account for the interaction of variables, appending a program (R) to the end of another program (P) would always result in $|P|+|R|$, whichs means that if $|Q|=|P|$, then $|Q|+|R| ~= ~|P|+|R|$.
 	\item Property 7: The order of statements in McCabe's metric have no influence on complexity; we will always have the same number of branches, same number of nodes, and components
-	Property 9: McCabe's metric fails this for the same reason as property 6
+	\item Property 9: McCabe's metric fails this for the same reason as property 6
 \end{itemize}
 
 Additional critique was made by Martin J. Shepperd in his 1988 paper \cite{shepperd1988critique}, however we found some discrepancies between this critique and the model developed by McCabe.
