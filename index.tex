@@ -46,18 +46,18 @@ Large corporations agreed to contribute money to these projects, in hopes that i
 It is here where we can begin to understand the need to figure out who is working on projects, how much are they doing, and how complicated the projects are.
 
 Understanding who is working on a project is no simple matter; we must consider multiple roles (programmer, tester, project manager, to name a few), along with the amount of work they are putting into that project (are they spending 1/8 of their day on it? 16/24 of their day?).
-In this paper, will propose a method for further research that will allow one to quantify the contributions of at least one role in a software developers world; the role of the programmer.
+This paper, will propose a method for further research that will allow one to quantify the contributions of at least one role in a software developers world; the role of the programmer.
 Namely, what we want to discover is how we can measure the change that a developer causes in the codebase; are they simply renaming variables, adding UI elements, or changing core algorithms?
+This question of the distribution of coding contributions might have several applications: for example knowing the degree to which modified code has changes in complexity arises in assessment of students' work in education; in the assessment of originality in legal domains; and even the assessment of  biological material if we think of genetics or amino acid sequences as code.
 
-This forays into the field of software complexity.
-Do not confuse this field with other forms of complexity we often look at in the computer science discipline, such as time and space complexity.
+This brings us into the field of software complexity.
+It is important not to confuse this field with other forms of complexity we often look at in the computer science discipline, such as time and space complexity.
 The goal of this field is to determine how difficult a program is to understand, test, and write.
-We will not be focusing on developing another metric to just determine how complex a program is; rather, we will concern ourselves the change of complexity as function of time (where time can be commits, space-time, or something as arbitrary as lines of code).
 
 There have been many attempts over the years to measure software complexity; some of the most well known ones by McCabe \cite{ref:a_complexity_measure}, Oviedo \cite{ref:oviedo1993control}, and Halstead \cite{ref:halstead1977elements}.
-Our goal in this paper is to evaluate the most common complexity measures, and look for correlations between how real people percieve a program to be, and how the metrics understand the complexity of a program.
+Our goal in this paper is to develop a method which can eventually be used to evaluate the most common complexity measures, and look for correlations between how real people percieve a program to be, and how the metrics understand the complexity of a program.
 To conclude the paper, we will run a small-scale experiment on 5 people, asking them to rank 5 projects (which produce similar output) on how complex they appear to be.
-Later research would repeat this experiment on a larger, and more diverse, group of subjects.
+Later research will repeat this experiment on a larger, and more diverse, group of subjects.
 
 For simplicity, this paper will utilize the visual programming environment created for the 3Helix program at Rensselaer Polytechnic Institute, CSnap.
 These scripts are best stored (for long term access) as images, and will be included at the end of the paper.
@@ -75,7 +75,7 @@ Most of these articles have been reprinted \textbf{Software Engineering Metrics 
 
 It is worth mentioning that most of these metrics have had their accuracy questioned, and for the most part been proven to fail in one or more ways.
 A very well known paper that described the failure of these metrics is \textbf{Evaluating Software Complexity Measures}, written in 1988 by Elaine J. Weyuker \cite{ref:evaluating_software_complexity_measures}.
-The analysis done in this paper has been used as the core for many following software complexity papers, including the recent publication by Hongwei Tao, \textbf{Complexity measure based on program slicing and its validation} \cite{ref:tao2014complexity}.
+Weyuker's has been used as the core for many following software complexity papers, including the recent publication by Hongwei Tao, \textbf{Complexity measure based on program slicing and its validation} \cite{ref:tao2014complexity}.
 
 
 % More stuff?
@@ -85,8 +85,7 @@ The analysis done in this paper has been used as the core for many following sof
 % We need to talk about everything, including silly things like...
 % Lines of code changed
 
-In this section, we will summarize and describe previous metrics considered.
-Weyuker wrote a paper in 1988\cite{ref:evaluating_software_complexity_measures} which considered many of these metrics, and we will therefore make references to her paper.
+In this section, we will summarize and describe previous metrics, with particular attention to Weyuker's analysis.
 For convenience, I have copied the 9 properties of complexity measures she proposed here. 
 Note, however, that they are explained in greater detail in the paper.
 
@@ -146,7 +145,7 @@ There has been some change in the nature of computer programming which makes man
 We will set aside this case, to make the generation much more simple.
 
 Given a program start point, P, add every statement to a node N until a conditional (or loop) node is reached.
-At this point, create a new node to represent the conditional, and follow both new paths.
+At this point, create a new node to represent the conditional, and follow all new paths.
 When they end, join them into a new node.
 If we are dealing with a loop, when we reach the end of the loops inner block, draw a line back to our loop node. 
 Then connect the loop node to a new node. 
@@ -169,9 +168,12 @@ There are 3 primary items that is used the calculation of the cyclomatic number:
 	\item Number of compontents, denoted as p
 \end{itemize}
 
-Given these three variables, we can calculate a complexity (v) of a program using the following equation:
+Given these three variables, we can calculate a complexity ($\mu$) of a program using the following equation:
 
-$v ~= ~e ~- ~n ~+ 2p$
+$\mu ~= ~e ~- ~n ~+ 2p$
+
+It should be noted that we use 2p instead of p; some books use p, but draw an exra edge back to the start node from the end node in each component.
+These two methods result in identical complexities, but I prefer the second because it makes it easier to identify the start and end nodes in my program.
 
 The real challenge is to create the graph so you can find values for these variables.
 To do this you must break a program into parts such that there is a starting node, and ending node, and a sequence of nodes between that two have the following key attributes:
@@ -191,7 +193,7 @@ Looking at the control graph for the first program, see figure \ref{alpha}, we c
 There are 2 edges, 3 nodes, and 1 component.
 Therefore, our cyclomatic number is:
 
-$v ~= ~e ~- ~n ~+ 2p ~= ~2 ~- ~3 ~+ 2(1) ~= 1$
+$\mu ~= ~e ~- ~n ~+ 2p ~= ~2 ~- ~3 ~+ 2(1) ~= 1$
 
 In this figure, we can see that all statements get put into one node.
 More complicated graph, such as the one for program delta in figure \ref{delta}, allow to see how the control flow graph is generated more intuitively.
@@ -267,7 +269,52 @@ $NCD(x,y) ~= ~0.3238095238095238$
 \subsubsection{Analysis}
 
 Weyuker did not analyze this metric in her paper, and as of the time of writing this paper, no one has attempted that comparison.
-This is may be due to the fact that we don't normally analyze the distance between two sets of code as a metric, but it works very well for many of Weyuker's properties.
+This is may be due to the fact that we don't normally analyze the distance between two sets of code as a metric, even though many of Weyukers metrics are entirely about finding a change between two pieces of code.
+
+We provide a brief pass over all of Weyuker's properties with NCD in mind, and give an explanation as to why each is or isn't satisfied. 
+We will not do rigid proofs, but rather leave those for an area of later research.
+
+\begin{itemize}
+	\item Property 1: $(\exists P)(\exists Q)(|P|\neq |Q|)$
+	\begin{itemize}
+		\item This can easily be demonstrated; just look at the example we gave.
+	\end{itemize}
+	\item Property 2: Let c be a nonnegative number. Then there
+are only finitely many programs of complexity c.
+	\begin{itemize}
+		\item Given that for NCD a program is just a compression of source code, we could expect a program of size a to smaller than a program of size abc 
+	\end{itemize}
+	\item Property 3: There are distinct programs P and Q such
+that $|P| ~= ~|Q|$
+	\begin{itemize}
+		\item This is harder to envision, but if we had two programs that were the same code moved around, then compressed, we would get the same complexity size. Take a program (in some hypothetical language) that consisted of the code "ab", and it's brother program that consisted of "ba". Compressing these programs results in a NCD metric of 29 for both
+	\end{itemize}
+	\item Property 4: $(\exists P)(\exists Q)(P \equiv Q ~\& ~|P| \neq |Q|)$
+	\begin{itemize}
+		\item As long as the two programs aren't identical, and aren't permutations of each other, we could imagine two programs with different NCD's and the same output
+	\end{itemize}
+	\item Property 5: $(\forall P)(\forall Q)(|P| \leq |P; Q| ~and ~|Q| \leq |P; Q|)$
+	\begin{itemize}
+		\item Although in our examples it *may* be possible to prove this one wrong, this is most likely due to our not-quite-perfect compression; one could imagine that with a perfect compression, you could get a metric that is the same size, but not smaller
+	\end{itemize}
+	\item Property 6a: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |P;R| \neq |Q; R|)$
+	\item Property 6b: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |R;P| \neq |R; Q|)$
+	\begin{itemize}
+		\item NCD will account for this; if program R has subsets of program Q in it, it would result in a different size than program R;Q
+	\end{itemize}
+	\item Property 7: There are program bodies P and Q such that Q is formed by permuting the order of the statements of P, and $|P| \neq |Q|$
+	\begin{itemize}
+		\item This can be proven by taking the beta\_script.xml and moving the clear block; the resulting file has a larger size than the original
+	\end{itemize}
+	\item Property 8: If P is a renaming of Q, then $|P| = |Q|$
+	\begin{itemize}
+		\item NCD would fail in this respect; longer variable names would result in longer compressed scripts
+	\end{itemize}
+	\item Property 9: $(\exists P)(\exists Q)(|P|+|Q| < |P; Q|)$
+	\begin{itemize}
+		\item It is unlikely this would be true for NCD; adding two programs together gives the compressor more to work with, and therefore it would be able to do a better job. Just adding the size of the smaller compressed files would fail to work (just think about the overhead we have to add in! Program "ab" went from size 3 to size 29 when we compressed it).
+	\end{itemize}
+\end{itemize}
 
 % % TODO! More
 
