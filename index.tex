@@ -214,6 +214,8 @@ Additional critique was made by Martin J. Shepperd in his 1988 paper \cite{shepp
 \subsection{Normalized Compression Distance}
 
 Proposed by Rudi Cilibrasi and Paul Vitanyi in their 2005 paper, \textbf{Clustering by compression} \cite{ref:cilibrasi2005clustering} puts forth a very straightforward way of calculating complexity changes between two pieces of code, without even knowledge of the structure of the content.
+They envisioned this method being used to cluster data for machine learning, however, we believe it may also be a good way to measure change between two programs; if the distance between a start point and an end point are large, there was a great deal of change.
+If the distance is not significant, there was not a significant amount of change.
 They proposed using a standard compression method (such as gzip or PPMZ) to approximate the Kolmogorov complexity of a program, and using this solve the equation in figure \ref{ncd_eq_1}.
 
 
@@ -271,23 +273,59 @@ $NCD(x,y) ~= ~0.3238095238095238$
 Weyuker did not analyze this metric in her paper, and as of the time of writing this paper, no one has attempted that comparison.
 This is may be due to the fact that we don't normally analyze the distance between two sets of code as a metric, even though many of Weyukers metrics are entirely about finding a change between two pieces of code.
 
+In this section, we compare primarily programs P and Q.
+Rather than do something funky with comparing them to each other, we can imagine reducing NCD with an input of NCD(x,x), which can be reduced as demonstrated in figure \ref{ncd_reduction}.
+
+\begin{figure}[h]
+	\caption{Normalized Compression Distance Reduction}
+	\label{ncd_reduction}
+	\centering
+	$NCD(x,x) ~= \frac{C(xx) - min(C(x),C(x))}{max(C(x),C(x))}$
+	$NCD(x,x) ~= \frac{C(xx) - C(x)}{C(x)}$
+	$NCD(x,x) ~= \frac{C(xx)}{C(x)} ~- ~\frac{C(x)}{C(x)}$
+\end{figure}
+
+
+Rather than just end there though, let's discuss a few things.
+First, Normalized Compression Distance relies on a normal compressor, as discussed in Cilibrasi's paper \cite{ref:cilibrasi2005clustering}.
+It has the following attributes:
+\begin{enumerate}
+	\item Idempotency: C(xx) = C(x).
+	\item Monotonicity: C(xy) ≥ C(x).
+	\item Symmetry: C(xy) = C(yx).
+	\item Distributivity: C(xy) + C(z) ≤ C(xz) + C(yz).
+\end{enumerate}
+
+Which means we can further reduce this to further, to eventually, 1.
+Does this mean that all programs should have a NCD metric of 1, if compared to themselves?
+My assertion, for the purpose of doing this evaluation, is that they should not.
+
+What if we use a program, y, which has a size of 0.
+In this case, we still end up with C(x)/C(x), which is 1.
+So we can't do that.
+
+What if, instead, we had a program y, which is the same length of x, such that there is no way to get C(xy) that does not equal C(x)+C(y)?
+This provides us with a much better way to analyze the sitation; 
+
+% % This doesn't work.
+
 We provide a brief pass over all of Weyuker's properties with NCD in mind, and give an explanation as to why each is or isn't satisfied. 
 We will not do rigid proofs, but rather leave those for an area of later research.
 
 \begin{itemize}
 	\item Property 1: $(\exists P)(\exists Q)(|P|\neq |Q|)$
 	\begin{itemize}
-		\item This can easily be demonstrated; just look at the example we gave.
+		\item This can easily be demonstrated; just look at the example we give in the appendix. There are 4 programs, all of which have different complexity ratings.
 	\end{itemize}
 	\item Property 2: Let c be a nonnegative number. Then there
 are only finitely many programs of complexity c.
 	\begin{itemize}
-		\item Given that for NCD a program is just a compression of source code, we could expect a program of size a to smaller than a program of size abc 
+		\item Given that for NCD a program is just a compression of source code, we could expect a program with contents 'x+=1;' to smaller than a program with contents 'x+=1;y+=1'.
 	\end{itemize}
 	\item Property 3: There are distinct programs P and Q such
 that $|P| ~= ~|Q|$
 	\begin{itemize}
-		\item This is harder to envision, but if we had two programs that were the same code moved around, then compressed, we would get the same complexity size. Take a program (in some hypothetical language) that consisted of the code "ab", and it's brother program that consisted of "ba". Compressing these programs results in a NCD metric of 29 for both
+		\item This is harder to envision, but if we had two programs that were the same code moved around, then compressed, we would get the same complexity size. Take a program (in some hypothetical language) that consisted of the code "x+=1;y+=1", and it's brother program that consisted of "y+=1;x+=1". Compressing these programs results in a NCD metric of 34 for both
 	\end{itemize}
 	\item Property 4: $(\exists P)(\exists Q)(P \equiv Q ~\& ~|P| \neq |Q|)$
 	\begin{itemize}
@@ -295,7 +333,7 @@ that $|P| ~= ~|Q|$
 	\end{itemize}
 	\item Property 5: $(\forall P)(\forall Q)(|P| \leq |P; Q| ~and ~|Q| \leq |P; Q|)$
 	\begin{itemize}
-		\item Although in our examples it *may* be possible to prove this one wrong, this is most likely due to our not-quite-perfect compression; one could imagine that with a perfect compression, you could get a metric that is the same size, but not smaller
+		\item Although in our examples it *may* be possible to prove this one wrong, this is most likely due to our not-quite-perfect compression; one could imagine that with a perfect compression, you could get a metric that is the same size, but not smaller \footnote{Note that we are ignoring cases where two operations, when taken together, can be simplified to a single (or no) operation; our goal is to evaluate program complexity, not whether or not is optimal.}
 	\end{itemize}
 	\item Property 6a: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |P;R| \neq |Q; R|)$
 	\item Property 6b: $(\exists P)(\exists Q)(\exists R)(|P| = |Q| \& |R;P| \neq |R; Q|)$
