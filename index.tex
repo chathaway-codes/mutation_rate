@@ -274,42 +274,42 @@ Weyuker did not analyze this metric in her paper, and as of the time of writing 
 This is may be due to the fact that we don't normally analyze the distance between two sets of code as a metric, even though many of Weyukers metrics are entirely about finding a change between two pieces of code.
 
 In this section, we compare primarily programs P and Q.
-Rather than do something funky with comparing them to each other, we can imagine reducing NCD with an input of NCD(x,x), which can be reduced as demonstrated in figure \ref{ncd_reduction}.
+Rather than do something funky with comparing them to each other, we want to find a way to compare them one-on-one.
+There are a few ways of going about this for example, we can imagine reducing NCD with an input of NCD(x,x), which can be reduced as demonstrated in figure \ref{ncd_reduction} \footnote{Cilibrasi required a normal compressor, which meets 4 requirements; one of these is C(xx) = C(x)}.
 
 \begin{figure}[h]
 	\caption{Normalized Compression Distance Reduction}
 	\label{ncd_reduction}
 	\centering
-	$NCD(x,x) ~= \frac{C(xx) - min(C(x),C(x))}{max(C(x),C(x))}$
-	$NCD(x,x) ~= \frac{C(xx) - C(x)}{C(x)}$
-	$NCD(x,x) ~= \frac{C(xx)}{C(x)} ~- ~\frac{C(x)}{C(x)}$
+	$NCD(x,x) ~= \frac{C(xx) - min(C(x),C(x))}{max(C(x),C(x))}$ \\
+	$NCD(x,x) ~= \frac{C(xx) - C(x)}{C(x)}$  \\
+	$NCD(x,x) ~= \frac{0}{C(x)}$ \\
+	$NCD(x,x) ~= ~0$ \\
 \end{figure}
 
+Clearly, this doesn't work.
+It will always yield a result of 0, meaning that the two programs have perfect similarity.
+What if we try with NCD(x, 0), where 0 in this case represents a null program?
 
-Rather than just end there though, let's discuss a few things.
-First, Normalized Compression Distance relies on a normal compressor, as discussed in Cilibrasi's paper \cite{ref:cilibrasi2005clustering}.
-It has the following attributes:
-\begin{enumerate}
-	\item Idempotency: C(xx) = C(x).
-	\item Monotonicity: C(xy) ≥ C(x).
-	\item Symmetry: C(xy) = C(yx).
-	\item Distributivity: C(xy) + C(z) ≤ C(xz) + C(yz).
-\end{enumerate}
 
-Which means we can further reduce this to further, to eventually, 1.
-Does this mean that all programs should have a NCD metric of 1, if compared to themselves?
-My assertion, for the purpose of doing this evaluation, is that they should not.
+\begin{figure}[h]
+	\caption{Normalized Compression Distance Reduction 2}
+	\label{ncd_reduction2}
+	\centering
+	$NCD(x,0) ~= \frac{C(x) - min(C(x),C(0))}{max(C(x),C(0))}$ \\
+	$NCD(x,0) ~= \frac{C(xx) - C(0)}{C(x)}$ \\
+	$NCD(x,0) ~= \frac{C(X)}{C(x)}$ \\
+	$NCD(x,0) ~= ~1$ \\
+\end{figure}
 
-What if we use a program, y, which has a size of 0.
-In this case, we still end up with C(x)/C(x), which is 1.
-So we can't do that.
+In this case, we can see that we always evaluate to a value of 1.
+This is because there is no similarity between an empty program and our start program. 
 
-What if, instead, we had a program y, which is the same length of x, such that there is no way to get C(xy) that does not equal C(x)+C(y)?
-This provides us with a much better way to analyze the sitation; 
+After some consideration, we have decided to simply look at the C(x) for purposes of evaulating Weyuker's properties.
+The reason for this is that we want to compare NCD, but want to do it with single programs.
+Since NCD is a function of C, one could imagine that NCD has the same properties as C.
 
-% % This doesn't work.
-
-We provide a brief pass over all of Weyuker's properties with NCD in mind, and give an explanation as to why each is or isn't satisfied. 
+And so, without further ado, we provide a brief pass over all of Weyuker's properties with NCD in mind, and give an explanation as to why each is or isn't satisfied. 
 We will not do rigid proofs, but rather leave those for an area of later research.
 
 \begin{itemize}
